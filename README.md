@@ -13,6 +13,7 @@ pip install --editable ./
 ## Inference
 If you are using bash, a sample script for running inference is provided.
 ```
+cd bart
 bash run_inference.sh
 ```
 Or if you'd rather just run the python command directly:
@@ -32,7 +33,7 @@ The script assumes the input file is in the following json format:
 "<UNIQUE ARTICLE ID n>": "This is the text of another article to be summarized",
 }
 ```
-See the ../data_processing/data/sample_data.json file for a test case.
+See data_processing/data/sample_data.json for a test case.
 
 ## Training *Implementation in progress*
 The fine-tuned BART weights are provided with the release of this code. However, if you are interested in retraining the model with fairseq, instructions are provided here.
