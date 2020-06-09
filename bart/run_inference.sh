@@ -1,9 +1,7 @@
 model_config=bart_config/with_question/bart-bin
 model_path=checkpoints_bioasq_with_question/
-QUESTION="Do I have COVID-19?"
-joined_question=${QUESTION// /-}
-joined_question=${joined_question::-1}
-prediction_path=predictions/bart_summs_${joined_question}.json
+QUESTION="What is question-driven summarization?"
+prediction_path=predictions/sample_predictions.json
 data_path=../data_processing/data/sample_data.json
 echo $prediction_path
 
