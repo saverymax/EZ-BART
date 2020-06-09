@@ -3,7 +3,7 @@ model_path=checkpoints_bioasq_with_question/
 QUESTION="What is question-driven summarization?"
 prediction_path=predictions/sample_predictions.json
 data_path=../data_processing/data/sample_data.json
-echo $prediction_path
+echo Saving summaries to $prediction_path
 
 python run_inference.py \
     --question="${QUESTION}" \

@@ -66,7 +66,7 @@ def run_inference():
         raise
         
     # Question driven
-    for article_id in src_text:
+    for article_id in tqdm(src_text):
         ids.append(article_id)
         article = src_text[article_id]
         article = args.question_text + QUESTION_END + article
@@ -84,6 +84,7 @@ def run_inference():
             articles = []
 
     if len(articles) != 0: 
+        print("Predicting final batch...")
         predictions = bart.sample(articles, beam=4, lenpen=2.0, max_len_b=140, min_len=55, no_repeat_ngram_size=3)
         for pred in predictions:
             gen_summaries.append(pred)
@@ -96,7 +97,7 @@ def run_inference():
     with open(args.prediction_file, "w", encoding="utf-8") as f:
         json.dump(prediction_dict, f, indent=4)
 
-    print("Run time:", time.time() - start_time)
+    print("Done. Run time:", time.time() - start_time)
 
 
 if __name__ == "__main__":
