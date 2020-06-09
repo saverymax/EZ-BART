@@ -1,0 +1,20 @@
+Namespace(align_suffix=None, alignfile=None, all_gather_list_size=16384, bpe=None, cpu=False, criterion='cross_entropy', dataset_impl='mmap', destdir='bart_config/with_question/bart-bin', empty_cache_freq=0, fp16=False, fp16_init_scale=128, fp16_no_flatten_grads=False, fp16_scale_tolerance=0.0, fp16_scale_window=None, joined_dictionary=False, log_format=None, log_interval=100, lr_scheduler='fixed', memory_efficient_fp16=False, min_loss_scale=0.0001, no_progress_bar=False, nwordssrc=-1, nwordstgt=-1, only_source=False, optimizer='nag', padding_factor=8, seed=1, source_lang='source', srcdict='dict.txt', target_lang='target', task='translation', tensorboard_logdir='', testpref=None, tgtdict='dict.txt', threshold_loss_scale=None, thresholdsrc=0, thresholdtgt=0, tokenizer=None, trainpref='bart_config/with_question/bart.train_with_question.bpe', user_dir=None, validpref='bart_config/with_question/bart.val_with_question.bpe', workers=60)
+[source] Dictionary: 50263 types
+[source] bart_config/with_question/bart.train_with_question.bpe.source: 38166 sents, 14535239 tokens, 0.0% replaced by <unk>
+[source] Dictionary: 50263 types
+[source] bart_config/with_question/bart.val_with_question.bpe.source: 174 sents, 64715 tokens, 0.0% replaced by <unk>
+[target] Dictionary: 50263 types
+[target] bart_config/with_question/bart.train_with_question.bpe.target: 38166 sents, 1820650 tokens, 0.0% replaced by <unk>
+[target] Dictionary: 50263 types
+[target] bart_config/with_question/bart.val_with_question.bpe.target: 174 sents, 17191 tokens, 0.0% replaced by <unk>
+Wrote preprocessed data to bart_config/with_question/bart-bin
+Namespace(align_suffix=None, alignfile=None, all_gather_list_size=16384, bpe=None, cpu=False, criterion='cross_entropy', dataset_impl='mmap', destdir='bart_config/with_question/bart-bin', empty_cache_freq=0, fp16=False, fp16_init_scale=128, fp16_no_flatten_grads=False, fp16_scale_tolerance=0.0, fp16_scale_window=None, joined_dictionary=False, log_format=None, log_interval=100, lr_scheduler='fixed', memory_efficient_fp16=False, min_loss_scale=0.0001, no_progress_bar=False, nwordssrc=-1, nwordstgt=-1, only_source=False, optimizer='nag', padding_factor=8, seed=1, source_lang='source', srcdict='dict.txt', target_lang='target', task='translation', tensorboard_logdir='', testpref=None, tgtdict='dict.txt', threshold_loss_scale=None, thresholdsrc=0, thresholdtgt=0, tokenizer=None, trainpref='bart_config/with_question/bart.train_with_question.bpe', user_dir=None, validpref='bart_config/with_question/bart.val_with_question.bpe', workers=60)
+[source] Dictionary: 50263 types
+[source] bart_config/with_question/bart.train_with_question.bpe.source: 38166 sents, 14535239 tokens, 0.0% replaced by <unk>
+[source] Dictionary: 50263 types
+[source] bart_config/with_question/bart.val_with_question.bpe.source: 174 sents, 64715 tokens, 0.0% replaced by <unk>
+[target] Dictionary: 50263 types
+[target] bart_config/with_question/bart.train_with_question.bpe.target: 38166 sents, 1820650 tokens, 0.0% replaced by <unk>
+[target] Dictionary: 50263 types
+[target] bart_config/with_question/bart.val_with_question.bpe.target: 174 sents, 17191 tokens, 0.0% replaced by <unk>
+Wrote preprocessed data to bart_config/with_question/bart-bin
