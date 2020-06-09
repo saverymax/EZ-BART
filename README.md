@@ -1,19 +1,22 @@
 # EZ BART Summarization Tool
-This is the repository for the BART summarization tool discussed in the paper *Question-Driven Summarization of Answers to Consumer Health Questions*
+This is the repository for the BART summarization tool discussed in the paper *Question-Driven Summarization of Answers to Consumer Health Questions*. 
 
 ## Installation
+This installation assumes Python >= 3.6 and anaconda or miniconda is installed.   
 ```
+git clone https://github.com/saverymax/EZ-BART.git
 conda create --name ez_bart pytorch torchvision -c pytorch
+conda activate ez_bart
 pip install -r requirements.txt
+cd bart
 git clone https://github.com/pytorch/fairseq
 cd fairseq
 pip install --editable ./
 ```
 
 ## Inference
-If you are using bash, a sample script for running inference is provided.
+If you are using bash, a sample script for running inference is provided in the bart directory.
 ```
-cd bart
 bash run_inference.sh
 ```
 Or if you'd rather just run the python command directly:
