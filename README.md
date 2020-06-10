@@ -3,9 +3,11 @@ This is the repository for the BART summarization tool discussed in the paper *Q
 
 ## Installation
 This installation assumes Python >= 3.6 and anaconda or miniconda is installed.   
+Note that this install works *only* for running inference. For training, different installation instructions will be provided.
 ```
 git clone https://github.com/saverymax/EZ-BART.git
-conda create --name ez_bart pytorch torchvision -c pytorch
+cd EZ-BART
+conda create --name ez_bart python=3.7 pytorch torchvision cpuonly -c pytorch
 conda activate ez_bart
 pip install -r requirements.txt
 cd bart
@@ -19,14 +21,9 @@ If you are using bash, a sample script for running inference is provided in the 
 ```
 bash run_inference.sh
 ```
-Or if you'd rather just run the python command directly:
+Or if you'd rather run the python command directly:
 ```
-python run_inference.py \
-    --question="Do I have COVID-19?" \
-    --prediction_file=predictions/bart_summs.json \
-    --model_path=checkpoints_bioasq_with_question \
-    --model_config=bart_config/with_question/bart-bin \
-    --data=../data_processing/data/sample_data.json
+python run_inference.py --question="Do I have COVID-19?" --prediction_file=predictions/bart_summs.json --model_path=checkpoints_bioasq_with_question --model_config=bart_config/with_question/bart-bin --data=../data_processing/data/sample_data.json
 ```
 The script assumes the input file is in the following json format:
 ```
