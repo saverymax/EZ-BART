@@ -27,9 +27,6 @@ def get_args():
     parser.add_argument("--model_path",
                         dest="model_path",
                         help="Path to model checkpoints")
-    parser.add_argument("--model_config",
-                        dest="model_config",
-                        help="Path to model vocab")
     parser.add_argument("--batch_size",
                         dest="batch_size",
                         default=32,
@@ -41,15 +38,17 @@ def get_args():
     return parser
 
 
-def run_inference():
+def main():
     """
     Main function for running inference on given input text
     """
+    args = get_args().parse_args()
     start_time = time.time()
+
     bart = BARTModel.from_pretrained(
         args.model_path,
         checkpoint_file='checkpoint_best.pt',
-        data_name_or_path=args.model_config
+        data_name_or_path='bart/bart_config/with_question/bart-bin'
     )
 
     bart.eval()
@@ -97,10 +96,8 @@ def run_inference():
     with open(args.prediction_file, "w", encoding="utf-8") as f:
         json.dump(prediction_dict, f, indent=4)
 
-    print("Done. Run time:", time.time() - start_time)
+    print("Done generating summaries. Run time:", time.time() - start_time)
 
 
 if __name__ == "__main__":
-    global args
-    args = get_args().parse_args()
-    run_inference()
+    main()
