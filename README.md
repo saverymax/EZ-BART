@@ -35,7 +35,7 @@ See data_processing/data/sample_data.json for an example.
 Once your data is in the correct format, you are ready to summarize!
 For example, from the base directory of this repository (EZ-BART), using the provided sample data you can try running
 ```
-python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/checkpoints_bioasq_with_question --data=data_processing/data/sample_data.json
+python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/bart_finetuned_checkpoint/checkpoints_bioasq_with_question --data=bart/data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
 ```
 ### FLAGS
 **--question** The question you would like to drive the content of the summary.   
