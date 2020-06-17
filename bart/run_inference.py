@@ -23,6 +23,7 @@ def get_args():
                         dest="prediction_file",
                         help="File to save predictions")
     parser.add_argument("--question",
+                        default="",
                         dest="question_text",
                         help="The text of the question")
     parser.add_argument("--model_path",
