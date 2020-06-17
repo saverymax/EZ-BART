@@ -5,9 +5,9 @@ This is the repository for the BART summarization tool discussed in the paper *Q
 This installation assumes Python >= 3.6 and anaconda or miniconda is installed.   
 To install anaconda, see instructions here https://docs.anaconda.com/anaconda/install/   
 EZ-BART will run on either Windows or Linux, but the installation for anaconda varies per platform.
-For windows, you can download the installer [here](https://www.anaconda.com/download/#windows) and follow the prompts.
+For windows, you can download the installer [here](https://docs.anaconda.com/anaconda/install/windows/) and follow the prompts.
 
-Note that this install works *only* for running inference. For training, different installation instructions will be provided.
+Note that this install works *only* for running inference. For training, installation instructions will be provided soon.
 ```
 git clone https://github.com/saverymax/EZ-BART.git
 cd EZ-BART
@@ -21,8 +21,7 @@ pip install --editable ./
 ```
 
 ## Inference
-FOr inference, you will need to download the fine-tuned BART weights, and you will need data formatted properly.  
-The weights can be downloaded at https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown below.   
+For inference, first download the fine-tuned BART weights from https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown below.   
 The data format expected by the inference script is shown here:
 ```
 {
