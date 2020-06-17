@@ -7,6 +7,7 @@ import argparse
 import json
 import glob
 import time
+import os
 
 from tqdm import tqdm
 import torch
@@ -33,7 +34,7 @@ def get_args():
                         help="Batch size for inference")
     parser.add_argument("--model_config",
                         dest="model_config",
-                        default="./bart/bart_config/with_question/bart-bin",
+                        default="bart/bart_config/with_question/bart-bin",
                         help="Path to model config for BART.")
     parser.add_argument("--data",
                         dest="data_path",
@@ -49,11 +50,11 @@ def main():
     args = get_args().parse_args()
     start_time = time.time()
 
-    if not os.path.exist(args.model_path)
-        raise IOException("Path to model does not exist. Please specify the path to the model without including the .pt file itself.")
+    if not os.path.exists(args.model_path):
+        raise IOError("Path to model does not exist. Please specify the path to the model without including the .pt file itself.")
 
-    if not os.path.exist(args.model_config)
-        raise IOException("Path to model config does not exist. Please specify the path to the model configuration. By default, this is bart/bart_config/with_question/bart-bin")
+    if not os.path.exists(args.model_config):
+        raise IOError("Path to model config does not exist. Please specify the path to the model configuration. By default, this is bart/bart_config/with_question/bart-bin")
 
     bart = BARTModel.from_pretrained(
         args.model_path,

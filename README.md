@@ -33,10 +33,12 @@ The data format expected by the inference script is shown here:
 See data_processing/data/sample_data.json for an example.
 
 Once your data is in the correct format, you are ready to summarize!
-For example, from the base directory of this repository (EZ-BART), using the provided sample data you can try running
+For example, from the base directory of this repository (EZ-BART), you can try running
 ```
-python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/bart_finetuned_checkpoint/checkpoints_bioasq_with_question --data=bart/data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
+python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/bart_finetuned_checkpoint/checkpoints_bioasq_with_question --data=data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
 ```
+This example assumes you have stored the model checkpoint in the EZ-BART/bart directory, but you can set the location to anywhere.
+
 ### FLAGS
 **--question** The question you would like to drive the content of the summary.   
 **--prediction_file** The path of the file you would like the summaries saved to.   
