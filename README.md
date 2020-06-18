@@ -49,11 +49,11 @@ This example assumes you have stored the downloaded weights (bart_finedted_check
 **--prediction_file** The path of the file you would like the summaries saved to.   
 **--model_path** The path to the downloaded BART weights. Include only the path to the directory the model is stored in, not the .pt file itself.   
 **--data** The path to the json with the data you would like to be summarized.   
-**--model_config** The path to the configuration for the model. If using the pretrained weights, this is optional to include since the default specifies the correct path. The path will need to be adjusted if you are fine-tuning the weights yourself.   
+**--model_config** The path to the configuration for the model. If using the fine-tuned weights, this is optional to include since the default specifies the correct path. The path will need to be adjusted if you are fine-tuning the weights yourself.   
 
 
 ## Training 
-*Implementation in progress*
+*Implementation in progress*   
 The fine-tuned BART weights are provided with the release of this code. A HuggingFace (https://huggingface.co/) training protocol will be provided in the future.
 ```
 bash prepare_training_data.sh
@@ -66,6 +66,5 @@ bash make_bart_data.sh
 Then
 ```
 python -m EZ-BART.run_hf_train --model_config=path/to/config --model_checkpoint=path_to_checkpoint --training_data=path/to/data --hyperparams=some_hyperparams
-tar -xzf bart.large.tar.gz
 ```
 
