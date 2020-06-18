@@ -21,7 +21,6 @@ pip install --editable ./
 ```
 
 ## Inference
-For inference, first download the fine-tuned BART weights from https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown below.   
 The data format expected by the inference script is shown here:
 ```
 {
@@ -32,12 +31,14 @@ The data format expected by the inference script is shown here:
 ```
 See data_processing/data/sample_data.json for an example.
 
-Once your data is in the correct format, you are ready to summarize!
+To run the model, first download the fine-tuned BART weights from https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown in the example below.   
+
+Once your data is in the correct format and you have downloaded the model, you are ready to summarize!
 Activate your environment if it is not already activated
 ```
-conda create --name ez_bart python=3.7 pytorch torchvision cpuonly -c pytorch
+conda activate ez_bart
 ```
-And then, for example, from the base directory of this repository (EZ-BART) you can try running
+And then from the base directory of this repository (EZ-BART), you can try running
 ```
 python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/bart_finetuned_checkpoint/checkpoints_bioasq_with_question --data=data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
 ```
