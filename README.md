@@ -33,29 +33,38 @@ The data format expected by the inference script is shown here:
 See data_processing/data/sample_data.json for an example.
 
 Once your data is in the correct format, you are ready to summarize!
-For example, from the base directory of this repository (EZ-BART), you can try running
+Activate your environment if it is not already activated
+```
+conda create --name ez_bart python=3.7 pytorch torchvision cpuonly -c pytorch
+```
+And then, for example, from the base directory of this repository (EZ-BART) you can try running
 ```
 python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/bart_finetuned_checkpoint/checkpoints_bioasq_with_question --data=data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
 ```
-This example assumes you have stored the model checkpoint in the EZ-BART/bart directory, but you can set the location to anywhere.
+This example assumes you have stored the downloaded weights (bart_finedted_checkpoint/checkpoints_bioasq_with_question/checkpoint_best.pt) in the EZ-BART/bart directory, but you can store the weights wherever is convenient for your system.
 
 ### FLAGS
 **--question** The question you would like to drive the content of the summary.   
 **--prediction_file** The path of the file you would like the summaries saved to.   
-**--model_path** The path to the downloaded BART weights.   
+**--model_path** The path to the downloaded BART weights. Include only the path to the directory the model is stored in, not the .pt file itself.   
 **--data** The path to the json with the data you would like to be summarized.   
+**--model_config** The path to the configuration for the model. If using the pretrained weights, this is optional to include since the default specifies the correct path. The path will need to be adjusted if you are fine-tuning the weights yourself.   
 
 
-## Training *Implementation in progress*
-The fine-tuned BART weights are provided with the release of this code. However, if you are interested in retraining the model with fairseq, instructions are provided here.
+## Training 
+*Implementation in progress*
+The fine-tuned BART weights are provided with the release of this code. A HuggingFace (https://huggingface.co/) training protocol will be provided in the future.
 ```
-wget https://dl.fbaipublicfiles.com/fairseq/models/bart.large.tar.gz
-tar -xzf bart.large.tar.gz
 bash prepare_training_data.sh
 ```
 This will process the bioasq and medinfo data for training and validation, respectively.   
 Then, to prepare data files for BART:
 ```
 bash make_bart_data.sh
+```
+Then
+```
+python -m EZ-BART.run_hf_train --model_config=path/to/config --model_checkpoint=path_to_checkpoint --training_data=path/to/data --hyperparams=some_hyperparams
+tar -xzf bart.large.tar.gz
 ```
 
