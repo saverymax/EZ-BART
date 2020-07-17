@@ -1,2 +1,5 @@
 requests
+lxml
 tqdm
+sklearn
+py-rouge
