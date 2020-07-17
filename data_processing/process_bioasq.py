@@ -11,25 +11,11 @@ python process_bioasq.py -p
 import json
 import sys
 import os
-import argparse
 import lxml.etree as le
 import glob
 from collections import Counter
 
 import numpy as np
-
-
-def get_args():
-    """
-    Get command line arguments
-    """
-
-    parser = argparse.ArgumentParser(description="Arguments for data exploration")
-    parser.add_argument("-p",
-                        dest="process",
-                        action="store_true",
-                        help="Process bioasq data")
-    return parser
 
 
 class BioASQ():
@@ -41,16 +27,18 @@ class BioASQ():
         """
         Load bioasq dataset
         """
-        with open("data/BioASQ-training7b/BioASQ-training7b/training7b.json", "r", encoding="ascii") as f:
+        with open("data/bioasq/BioASQ-training7b/BioASQ-training7b/training7b.json", "r", encoding="ascii") as f:
             bioasq_questions = json.load(f)['questions']
         return bioasq_questions
 
-    def bioasq(self):
+    def process(self):
         """
         Process BioASQ training data. Generate summary stats. Save questions, ideal answers, snippets, articles, and question types.
         """
+        print("Parsing BioASQ")
         bioasq_questions = self._load_bioasq()
-        with open("data/bioasq_pubmed_articles.json", "r", encoding="ascii") as f:
+        # Pre-downloaded articles used for BioASQ but not provided in original data
+        with open("data/bioasq/bioasq_pubmed_articles.json", "r", encoding="ascii") as f:
             articles = json.load(f)
         # Dictionary to save condensed json of bioasq
         bioasq_collection = {}
@@ -100,12 +88,32 @@ class BioASQ():
                 except KeyError as e:
                     continue
 
-        with open("data/bioasq_ideal_answers.json", "w", encoding="utf8") as f:
-            json.dump(ideal_answer_dict, f, indent=4)
-        with open("data/bioasq_snippets.json", "w", encoding="utf8") as f:
-            json.dump(snippet_dict, f, indent=4)
-        with open("data/bioasq_collection.json", "w", encoding="utf8") as f:
+        with open("data/bioasq/bioasq_nested_collection.json", "w", encoding="utf8") as f:
             json.dump(bioasq_collection, f, indent=4)
+
+    def prepare_for_bart(self):
+        """
+        Prepare collection to be used in prepare_training data, 
+        where the script expects a flat format with one query 
+        per summary and doc pair instead of a not nested as is the natural format for bioasq.
+        """
+        with open("data/bioasq/bioasq_nested_collection.json", "r", encoding="utf8") as f:
+            data = json.load(f)
+        flattened_collection = {}
+        snip_cnt = 0
+        for i, q in enumerate(data):
+            for snippet in data[q]['snippets']:
+                snippet_text = snippet['snippet'].strip()
+                abstract_text = snippet['article'].strip()
+                question = q.replace("\n", " ")
+                flattened_collection[snip_cnt] = {
+                        'query': question,
+                        'summary': snippet_text,
+                        'document': abstract_text,
+                        }
+                snip_cnt += 1
+        with open("data/bioasq/bioasq_collection.json", "w", encoding="utf8") as f:
+            json.dump(flattened_collection, f, indent=4)
 
     
 def process_bioasq():
@@ -113,10 +121,8 @@ def process_bioasq():
     Main processing function for bioasq data
     """
     bq = BioASQ()
-    if args.process:
-        bq.bioasq()
+    bq.process()
+    bq.prepare_for_bart()
 
 if __name__ == "__main__":
-    global args
-    args = get_args().parse_args()
     process_bioasq()
