@@ -21,7 +21,7 @@ pip install --editable ./
 ```
 
 ## Inference
-You can use BART to generate summaries driven with or without a question. For question-driven summarization, you have two options. If you have one question you want to use for a set of documents, you can provide your data as shown below, and specify your question with the --question flag (see flag descriptions).
+You can use BART to generate summaries with or without a question guiding the content. For question-driven summarization, you have two options. If you have a single question you want to use for a set of documents, you can provide your data as shown below, and specify your question with the --question flag (see flag descriptions).
 ```
 {
 "<UNIQUE ARTICLE ID 1>": "This is the text of the article to be summarized",
@@ -31,7 +31,7 @@ You can use BART to generate summaries driven with or without a question. For qu
 ```
 data_processing/data/sample_data.json contains an example of this data structure.   
 
-Your other option for question-driven summarization is that, if you have question-document pairs, where each question is unique for each document, you can use the --q-per-doc option instead, and provide your data in the format below:
+Your other option for question-driven summarization is that, if you have question-document pairs where each question is unique for each document, you can use the --q-per-doc option instead, and provide your data in the format below:
 ```
 {
 "<UNIQUE ARTICLE ID n>": 
@@ -40,8 +40,8 @@ Your other option for question-driven summarization is that, if you have questio
     'document: "This is the text of the article to be summarized",
 ...
 }
-The keys in the json you provide must be 'query' and 'document'. See the provided dataset in data_processing/data/* for examples   
-
+```
+The keys in the json you provide must be 'query' and 'document'. See the provided datasets in the directories in data_processing/data for examples   
 To run the model, first download the fine-tuned BART weights from https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown in the example below.   
 Once your data is in the correct format for your use-case and you have downloaded the model, you are ready to summarize!
 Activate your environment if it is not already activated
