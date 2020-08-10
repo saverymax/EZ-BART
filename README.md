@@ -85,25 +85,22 @@ First make sure your data is in the correct json format, with 'query', 'source_d
 ```
 It is not necessary that the value of the query key be a query per se; you may use a topic or keyword to focus the content of the summary. It is also possible to not include query key in the data, but make sure to leave out the --add-q option in the processing command.
 
-For futher information regarding processing your dataset, a working example of processing the BioASQ and Medinfo data is included in the data_processing directory, in process_bioasq.py and process_medinfo.py
+For futher information regarding processing your dataset, a working example of processing the BioASQ and Medinfo data into the correct format is included in the data_processing directory, in process_bioasq.py and process_medinfo.py
 
 Then, to prepare data files for BART, run the following. This formats the data to so that fairseq can efficiently process it during training.
-```
-your data stuff
-```
 
-For example
+We have provided a few pre-formatted datasets that you may use. See the datasets section below for their description. For example, to train with the BioASQ data (the data used to finetune the weights we provide), you can run the following command. To use your data, just replace with --train_path and --val_path with your training and validation data, assuming it has been formatted correctly. The prepare_training_data.py script will format the data for BART and place the processed data into the expected directories. 
 ```
 python -m data_processing.prepare_training_data --train_path=data_processing/data/bioasq/bioasq_collection.json --val_path=data_processing/data/medinfo/medinfo_section2answer_validation_data.json --config_path=/data/saveryme/ez_bart_config --add_q
 ```
-And with bash
+Once you run the python command, another processing step is necessary for tokenization, as this is handled by the fairseq library. Using bash, run
 ```
 bash data_processing/make_bart_data.sh
 ```
 This will tokenize and prepare the training and validation data for the model to efficiently process. The script will download encoder.json, vocab.bpe, and dict.txt from a Facebook cloud service.
 
 Now you are ready to train!
-With bash
+Using bash,
 ```
 BART_CONFIG=/data/saveryme/ez_bart_config/with_question/
 CHECKPOINT_DIR=/data/saveryme/EZ-bart-summ/bart/new_checkpoints
@@ -138,6 +135,18 @@ CUDA_VISIBLE_DEVICES=0 python -m bart.train $BART_CONFIG/bart-bin \
 If you have a environment suitable for mixed precision training, include the ```--fp16``` option as well.
 
 Once your model is trained, you can use it for inference as described in the first section. Just make sure to specify the path to your new weights and config.
+
+### Datasets
+The datasets included in this repository are described below. They can be used to train medical summarization systems.
+1. BioASQ   
+    The BioASQ challenge dataset, consisting of technical biomedical questions, scientific abstracts, and snippets extracted from the abstracts which provide information relevant to answering the question.   
+2. MedInfo
+    The data used for the MedInfo challenge, which consists on consumer health questions about drugs and medications. The dataset includes these questions, passages containing information relevant to the questions, and a shorter question-driven summary of the information in the passage.   
+3. Cochrane Clinical Answers   
+    The Cochrane clinical answer dataset contains clinical questions, review articles with information relevant to the question, and answers to the question using the information in the reviews. This data was written by the Cochrane review group, can be used for summarization.   
+4. MEDIQA-AnS   
+    The MEDIQA-AnS dataset consists of consumer health questions about medical information, passages containing information relevant to the question, and summaries of those passages. The collection available at https://osf.io/fyg46/ can be used for a variety of tasks; the data we have provided here can be used for training an abstractive or extractive model (correspoinding to the file names mediqa_abs or mediqa_ext). For these respective datasets, one contains manually generated extractive summaries, the other contains manually generated abstractive summaries.
+
 
 ## FAQ
 1. When is my model done training?
