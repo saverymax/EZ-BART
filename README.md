@@ -21,7 +21,7 @@ pip install --editable ./
 ```
 
 ## Inference
-The data format expected by the inference script is shown here:
+You can use BART to generate summaries driven with or without a question. For question-driven summarization, you have two options. If you have one question you want to use for a set of documents, you can provide your data as shown below, and specify your question with the --question flag (see flag descriptions).
 ```
 {
 "<UNIQUE ARTICLE ID 1>": "This is the text of the article to be summarized",
@@ -29,11 +29,21 @@ The data format expected by the inference script is shown here:
 "<UNIQUE ARTICLE ID n>": "This is the text of another article to be summarized",
 }
 ```
-See data_processing/data/sample_data.json for an example.
+data_processing/data/sample_data.json contains an example of this data structure.   
+
+Your other option for question-driven summarization is that, if you have question-document pairs, where each question is unique for each document, you can use the --q-per-doc option instead, and provide your data in the format below:
+```
+{
+"<UNIQUE ARTICLE ID n>": 
+    {
+    'query': "Text of question for a single document", 
+    'document: "This is the text of the article to be summarized",
+...
+}
+The keys in the json you provide must be 'query' and 'document'. See the provided dataset in data_processing/data/* for examples   
 
 To run the model, first download the fine-tuned BART weights from https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown in the example below.   
-
-Once your data is in the correct format and you have downloaded the model, you are ready to summarize!
+Once your data is in the correct format for your use-case and you have downloaded the model, you are ready to summarize!
 Activate your environment if it is not already activated
 ```
 conda activate ez_bart
@@ -46,6 +56,7 @@ This example assumes you have stored the downloaded weights (bart_finedted_check
 
 ### FLAGS
 **--question** The question you would like to drive the content of the summary.   
+**--q-per-doc** The above option sets 1 question for all source documents you provide. If you instead have question-document pairs, you can provide the data in the json specified above and use this option. Note that the --question flag will have no effect if using --q-per-doc.   
 **--prediction_file** The path of the file you would like the summaries saved to.   
 **--model_path** The path to the downloaded BART weights. Include only the path to the directory the model is stored in, not the .pt file itself.   
 **--data** The path to the json with the data you would like to be summarized.   
@@ -53,7 +64,7 @@ This example assumes you have stored the downloaded weights (bart_finedted_check
 
 
 ## Training
-As described above, the fine-tuned BART weights can be used as-is. However, should you want to use weights fine-tuned on data other than BioASQ, the instructions here demonstrate how to retrain the BART model with your own data, or on a selection of biomedical datasets included in this repository.
+As described above, the fine-tuned BART weights can be used as-is. However, should you want to use weights fine-tuned on data other than BioASQ, the instructions here demonstrate how to retrain the BART model with your own data, or on a selection of biomedical datasets included in this repository, described in the datasets section.
 
 ### Environment
 A GPU with 32gb of VRAM is required to train BART. This memory requirement assumes a maximum source document sequence length of 1024 subword tokens, and a batch size of 8. You can feasibly use a 16gb GPU with a smaller sequence length instead, and will not suffer performance degredation to a large degree with a maximum sequence length of 512.
@@ -78,35 +89,32 @@ Using your own training data is encouraged, but because of the unique content an
 First make sure your data is in the correct json format, with 'query', 'source_document', and 'summary' keys.
 ```
 {
-'example_id_1': {'query': "query text", 'source_document': "document to be summarized", 'summary': "summary of the document},
+'example_id_1': {'query': "query text", 'document': "document to be summarized", 'summary': "summary of the document},
 ...
-'example_id_n': {'query': "query text", 'source_document': "document to be summarized", 'summary': "summary of the document},
+'example_id_n': {'query': "query text", 'document': "document to be summarized", 'summary': "summary of the document},
 }
 ```
-It is not necessary that the value of the query key be a query per se; you may use a topic or keyword to focus the content of the summary. It is also possible to not include query key in the data, but make sure to leave out the --add-q option in the processing command.
+It is not necessary for the value of the query key be a query per se; you may use a topic or keyword to focus the content of the summary. It is also possible to not include query key in the data, but make sure to leave out the --add-q option in the processing command. Additionally, you will need to remove all newlines ("\n") from your data (for the tokenization step using fairseq).
 
-For futher information regarding processing your dataset, a working example of processing the BioASQ and Medinfo data into the correct format is included in the data_processing directory, in process_bioasq.py and process_medinfo.py
+For futher information regarding processing your dataset, a working example of processing the BioASQ and Medinfo data into the correct format is included in the data_processing directory, in process_bioasq.py and process_medinfo.py. 
 
-Then, to prepare data files for BART, run the following. This formats the data to so that fairseq can efficiently process it during training.
-
-We have provided a few pre-formatted datasets that you may use. See the datasets section below for their description. For example, to train with the BioASQ data (the data used to finetune the weights we provide), you can run the following command. To use your data, just replace with --train_path and --val_path with your training and validation data, assuming it has been formatted correctly. The prepare_training_data.py script will format the data for BART and place the processed data into the expected directories. 
+To prepare data files for BART, run the following. This formats the data to so that fairseq can efficiently process it during training. Note that we have provided a few pre-formatted datasets that you may use. See the datasets section below for their description. For example, to train with the BioASQ data (the data used to finetune the weights we provide), you can run the following command. To use your data, just replace with --train_path and --val_path with your training and validation data, assuming it has been formatted correctly, and specify a config path. The prepare_training_data.py script will format the data for BART and place the processed data into the expected directories. 
 ```
-python -m data_processing.prepare_training_data --train_path=data_processing/data/bioasq/bioasq_collection.json --val_path=data_processing/data/medinfo/medinfo_section2answer_validation_data.json --config_path=/data/saveryme/ez_bart_config --add_q
+python -m data_processing.prepare_training_data --train_path=data_processing/data/bioasq/bioasq_collection.json --val_path=data_processing/data/medinfo/medinfo_section2answer_validation_data.json --config_path=/path/to/config --add_q
 ```
+Specify the directory you want to the config to be saved in. The script will create the path if the directory does not exist.
 Once you run the python command, another processing step is necessary for tokenization, as this is handled by the fairseq library. Using bash, run
 ```
-bash data_processing/make_bart_data.sh
+bash data_processing/make_bart_data.sh /path/to/config/used/above
 ```
-This will tokenize and prepare the training and validation data for the model to efficiently process. The script will download encoder.json, vocab.bpe, and dict.txt from a Facebook cloud service.
+This will tokenize and prepare the training and validation data for the model to efficiently process. The script will download encoder.json, vocab.bpe, and dict.txt from a Facebook cloud service. It will also create the bart-bin directory within your config directory, and you will have to include the bart-bin directory when you specify the config for training and inference.
 
 Now you are ready to train!
 Using bash,
 ```
-BART_CONFIG=/data/saveryme/ez_bart_config/with_question/
-CHECKPOINT_DIR=/data/saveryme/EZ-bart-summ/bart/new_checkpoints
-
-BART_CONFIG=path/to/your/config/with_or_with_out_question
+BART_CONFIG=path/to/your/config
 CHECKPOINT_DIR=path/to/save/checkpoints
+
 CUDA_VISIBLE_DEVICES=0 python -m bart.train $BART_CONFIG/bart-bin \
     --save-dir=$CHECKPOINT_DIR \
     --restore-file bart/bart.large/model.pt \
@@ -129,22 +137,22 @@ CUDA_VISIBLE_DEVICES=0 python -m bart.train $BART_CONFIG/bart-bin \
     --update-freq 16 \
     --skip-invalid-size-inputs-valid-test \
     --ddp-backend=no_c10d \
-    --keep-last-epochs=2 \
+    --keep-last-epochs=1 \
     --find-unused-parameters;
 ```
 If you have a environment suitable for mixed precision training, include the ```--fp16``` option as well.
 
-Once your model is trained, you can use it for inference as described in the first section. Just make sure to specify the path to your new weights and config.
+Once your model is trained, you can use it for inference as described in the first section. Just make sure to specify the path to your new weights and config, including the /bart-bin directory as the final directory in the config path.
 
 ### Datasets
 The datasets included in this repository are described below. They can be used to train medical summarization systems.
-1. BioASQ   
+1. **BioASQ**   
     The BioASQ challenge dataset, consisting of technical biomedical questions, scientific abstracts, and snippets extracted from the abstracts which provide information relevant to answering the question.   
-2. MedInfo
+2. **MedInfo**   
     The data used for the MedInfo challenge, which consists on consumer health questions about drugs and medications. The dataset includes these questions, passages containing information relevant to the questions, and a shorter question-driven summary of the information in the passage.   
-3. Cochrane Clinical Answers   
+3. **Cochrane Clinical Answers**   
     The Cochrane clinical answer dataset contains clinical questions, review articles with information relevant to the question, and answers to the question using the information in the reviews. This data was written by the Cochrane review group, can be used for summarization.   
-4. MEDIQA-AnS   
+4. **MEDIQA-AnS**   
     The MEDIQA-AnS dataset consists of consumer health questions about medical information, passages containing information relevant to the question, and summaries of those passages. The collection available at https://osf.io/fyg46/ can be used for a variety of tasks; the data we have provided here can be used for training an abstractive or extractive model (correspoinding to the file names mediqa_abs or mediqa_ext). For these respective datasets, one contains manually generated extractive summaries, the other contains manually generated abstractive summaries.
 
 
