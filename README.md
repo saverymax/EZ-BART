@@ -164,7 +164,7 @@ The datasets included in this repository are described below. They can be used t
 2. **MedInfo**   
     The data used for the MedInfo challenge, which consists of consumer health questions about drugs and medications. The dataset includes these questions, passages containing information relevant to the questions, and a shorter question-driven summary of the information in the passage.   
 3. **Cochrane Clinical Answers**   
-    The Cochrane clinical answer dataset contains clinical questions, review articles with information relevant to the question, and answers to the question using the information in the reviews. This data was written by the Cochrane review group, can be used for summarization.   
+    The Cochrane clinical answer dataset contains clinical questions, review articles with information relevant to the question, and answers to the question using the information in the reviews. This data was written by the Cochrane review group, and is an interesting test case for summarization.   
 4. **MEDIQA-AnS**   
     The MEDIQA-AnS dataset consists of consumer health questions about medical information, passages containing information relevant to the question, and summaries of those passages. The collection available at https://osf.io/fyg46/ can be used for a variety of tasks; the data we have provided here can be used for training an abstractive or extractive model (correspoinding to the file names mediqa_abs or mediqa_ext). For these respective datasets, one contains manually generated extractive summaries, the other contains manually generated abstractive summaries.
 
