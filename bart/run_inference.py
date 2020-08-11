@@ -26,12 +26,16 @@ def get_args():
                         default="",
                         dest="question_text",
                         help="The text of the question")
+    parser.add_argument("--q-per-doc",
+                        action='store_true',
+                        dest="q_per_doc",
+                        help="Process data with a separate question for each document")
     parser.add_argument("--model_path",
                         dest="model_path",
                         help="Path to model checkpoints")
     parser.add_argument("--batch_size",
                         dest="batch_size",
-                        default=32,
+                        default=2,
                         help="Batch size for inference")
     parser.add_argument("--model_config",
                         dest="model_config",
@@ -63,6 +67,7 @@ def main():
         data_name_or_path=args.model_config
     )
 
+    #bart.cuda()
     bart.eval()
     gen_summaries = []
     articles = []
@@ -79,8 +84,18 @@ def main():
     # Question driven
     for article_id in tqdm(src_text):
         ids.append(article_id)
-        article = src_text[article_id]
-        article = args.question_text + QUESTION_END + article
+        if args.q_per_doc:
+            try:
+                question_text = src_text[article_id]['query']
+                article = src_text[article_id]['document']
+                article = question_text + QUESTION_END + article
+            except KeyError as e:
+                print("Data has not been formatted correctly. Do you have corresponding question-document pairs with 'query' and 'doument' keys for each example? If not, you may not want to use the --q-per-doc flag.") 
+                raise e
+
+        else:
+            article = src_text[article_id]
+            article = args.question_text + QUESTION_END + article
         articles.append(article)
         # Once the article list fills up, run a batch
         if len(articles) == args.batch_size:
@@ -90,7 +105,6 @@ def main():
             with torch.no_grad():
                 predictions = bart.sample(articles, beam=4, lenpen=2.0, max_len_b=140, min_len=55, no_repeat_ngram_size=3)
             for pred in predictions:
-                #print(pred)
                 gen_summaries.append(pred)
             articles = []
 
