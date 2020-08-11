@@ -7,7 +7,7 @@ To install anaconda, see instructions here https://docs.anaconda.com/anaconda/in
 EZ-BART will run on either Windows or Linux, but the installation for anaconda varies per platform.
 For windows, you can download the installer [here](https://docs.anaconda.com/anaconda/install/windows/) and follow the prompts.
 
-Note that this install works *only* for running inference. For training, see below.
+Note that this install works *only* for running inference on a CPU. For training on a GPU, see below. Additionally, you can run inference on a GPU, which will be faster. See the training instructions for the GPU install.
 ```
 git clone https://github.com/saverymax/EZ-BART.git
 cd EZ-BART
@@ -52,19 +52,30 @@ And then from the base directory of this repository (EZ-BART), you can try runni
 ```
 python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/bart_finetuned_checkpoint/checkpoints_bioasq_with_question --data=data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
 ```
-This example assumes you have stored the downloaded weights (bart_finedted_checkpoint/checkpoints_bioasq_with_question/checkpoint_best.pt) in the EZ-BART/bart directory, but you can store the weights wherever is convenient for your system.
+Or for question-document pairs:
+```
+python -m bart.run_inference --q-per-doc --prediction_file=bart/predictions/bart_summs.json --model_path=bart/checkpoints_bioasq_with_question --data=data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
+```
+
+This example assumes you have stored the downloaded weights (checkpoints_bioasq_with_question/checkpoint_best.pt) in the EZ-BART/bart directory, but you can store the weights wherever is convenient for your system.
 
 ### FLAGS
-**--question** The question you would like to drive the content of the summary.   
-**--q-per-doc** The above option sets 1 question for all source documents you provide. If you instead have question-document pairs, you can provide the data in the json specified above and use this option. Note that the --question flag will have no effect if using --q-per-doc.   
-**--prediction_file** The path of the file you would like the summaries saved to.   
-**--model_path** The path to the downloaded BART weights. Include only the path to the directory the model is stored in, not the .pt file itself.   
-**--data** The path to the json with the data you would like to be summarized.   
-**--model_config** The path to the configuration for the model. If using the fine-tuned weights, this is optional to include since the default specifies the correct path. The path will need to be adjusted if you are fine-tuning the weights yourself.   
+**--question** 
+    The question you would like to drive the content of the summary.   
+**--q-per-doc** 
+    The above option sets a single question for all source documents you provide. If you instead have question-document pairs, you can provide the data as specified above and use this option. Note that the --question flag will have no effect if using --q-per-doc.   
+**--prediction_file** 
+    The path of the file you would like the summaries saved to.   
+**--model_path** 
+    The path to the downloaded BART weights. Include only the path to the directory the model is stored in, not the .pt file itself.   
+**--data** 
+    The path to the json with the data you would like to be summarized.   
+**--model_config** 
+    The path to the configuration for the model. If using the fine-tuned weights, this is optional to include since the default specifies the correct path. The path will need to be adjusted if you are fine-tuning the weights yourself.   
 
 
 ## Training
-As described above, the fine-tuned BART weights can be used as-is. However, should you want to use weights fine-tuned on data other than BioASQ, the instructions here demonstrate how to retrain the BART model with your own data, or on a selection of biomedical datasets included in this repository, described in the datasets section.
+Should you want to use weights fine-tuned on data other than BioASQ, the instructions here demonstrate how to retrain the BART model with your own data, or on a selection of biomedical datasets included in this repository, described in the datasets section.
 
 ### Environment
 A GPU with 32gb of VRAM is required to train BART. This memory requirement assumes a maximum source document sequence length of 1024 subword tokens, and a batch size of 8. You can feasibly use a 16gb GPU with a smaller sequence length instead, and will not suffer performance degredation to a large degree with a maximum sequence length of 512.
@@ -81,7 +92,11 @@ pip install --editable ./
 ```
 Note that the GPU version of pytorch will be installed, with the CUDA tool kit. It is also possible to install Nvidia's Apex library for mixed precision training, but as this install depends heavily on your individual system, we do not include it in the instructions here. See https://github.com/saverymax/qdriven-chiqa-summarization or https://github.com/pytorch/fairseq for instructions on an install that *might* work for you.
 
-
+Also you will need download the original (i.e., not fine-tuned on BioASQ) BART large weights
+```
+wget -P bart/ https://dl.fbaipublicfiles.com/fairseq/models/bart.large.tar.gz
+tart -C bart/ -xzvf bart/bart.large.tar.gz 
+```
 ### Data
 
 Using your own training data is encouraged, but because of the unique content and structure of each dataset, it may require custom processing on your end. Once your dataset has been formatted in the following structure, you can train with it after one more fairseq-specific processing step.  
@@ -142,7 +157,7 @@ CUDA_VISIBLE_DEVICES=0 python -m bart.train $BART_CONFIG/bart-bin \
 ```
 If you have a environment suitable for mixed precision training, include the ```--fp16``` option as well.
 
-Once your model is trained, you can use it for inference as described in the first section. Just make sure to specify the path to your new weights and config, including the /bart-bin directory as the final directory in the config path.
+Once your model is trained, you can use it for inference as described in the first section. Just make sure to specify the path to your new weights and config, including the /bart-bin directory as the final directory in the config path. Also note that inference will be done on CPU. You can add ```bart.cuda()``` on the line before bart.eval(), in the inference script, with a GPU environment to run on the GPU.
 
 ### Datasets
 The datasets included in this repository are described below. They can be used to train medical summarization systems.

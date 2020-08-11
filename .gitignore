@@ -1,6 +1,5 @@
 dict.txt
 encoder.json
 vocab.bpe
-data_processing/data/cochrane/*.json
 *.pyc
 *.pt
