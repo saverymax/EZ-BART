@@ -37,20 +37,18 @@ Your other option for question-driven summarization is that, if you have questio
 "<UNIQUE ARTICLE ID n>": 
     {
     'query': "Text of question for a single document", 
-    'document: "This is the text of the article to be summarized",
+    'document': "This is the text of the article to be summarized",
 ...
 }
 ```
-The keys in the json you provide must be 'query' and 'document'. See the provided datasets in the directories in data_processing/data for examples   
-To run the model, first download the fine-tuned BART weights from https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown in the example below.   
-Once your data is in the correct format for your use-case and you have downloaded the model, you are ready to summarize!
-Activate your environment if it is not already activated
+The keys in the json you provide must be 'query' and 'document'. See the provided datasets in the directories in data_processing/data for examples     
+To run the model, first download the fine-tuned BART weights from https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown in the example below. Once your data is in the correct format for your use-case and you have downloaded the model, you are ready to summarize! Activate your environment if it is not already activated
 ```
 conda activate ez_bart
 ```
 And then from the base directory of this repository (EZ-BART), you can try running
 ```
-python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/bart_finetuned_checkpoint/checkpoints_bioasq_with_question --data=data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
+python -m bart.run_inference --question="Do I have COVID-19?" --prediction_file=bart/predictions/bart_summs.json --model_path=bart/checkpoints_bioasq_with_question --data=data_processing/data/sample_data.json --model_config=bart/bart_config/with_question/bart-bin
 ```
 Or for question-document pairs:
 ```
@@ -109,7 +107,7 @@ First make sure your data is in the correct json format, with 'query', 'source_d
 'example_id_n': {'query': "query text", 'document': "document to be summarized", 'summary': "summary of the document},
 }
 ```
-It is not necessary for the value of the query key be a query per se; you may use a topic or keyword to focus the content of the summary. It is also possible to not include query key in the data, but make sure to leave out the --add-q option in the processing command. Additionally, you will need to remove all newlines ("\n") from your data (for the tokenization step using fairseq).
+It is not necessary for the value of the query key be a query per se; you may use a topic or keyword to focus the content of the summary. It is also possible to not include the query key in the data, but make sure to leave out the --add-q option in the processing command. Additionally, you will need to remove all newlines ("\n") from your data (for the tokenization step using fairseq).
 
 For futher information regarding processing your dataset, a working example of processing the BioASQ and Medinfo data into the correct format is included in the data_processing directory, in process_bioasq.py and process_medinfo.py. 
 
@@ -164,7 +162,7 @@ The datasets included in this repository are described below. They can be used t
 1. **BioASQ**   
     The BioASQ challenge dataset, consisting of technical biomedical questions, scientific abstracts, and snippets extracted from the abstracts which provide information relevant to answering the question.   
 2. **MedInfo**   
-    The data used for the MedInfo challenge, which consists on consumer health questions about drugs and medications. The dataset includes these questions, passages containing information relevant to the questions, and a shorter question-driven summary of the information in the passage.   
+    The data used for the MedInfo challenge, which consists of consumer health questions about drugs and medications. The dataset includes these questions, passages containing information relevant to the questions, and a shorter question-driven summary of the information in the passage.   
 3. **Cochrane Clinical Answers**   
     The Cochrane clinical answer dataset contains clinical questions, review articles with information relevant to the question, and answers to the question using the information in the reviews. This data was written by the Cochrane review group, can be used for summarization.   
 4. **MEDIQA-AnS**   
@@ -172,15 +170,15 @@ The datasets included in this repository are described below. They can be used t
 
 
 ## FAQ
-1. When is my model done training?
+1. *When is my model done training?*
   This depends on the size of your dataset and difficulty of the task. We observed good results after only a few epochs. It may serve you best to run training for different training times and compare the results.
-2. Does the fairseq processing support other tokenizers and data processors?
+2. *Does the fairseq processing support other tokenizers and data processors?*
   Yes! However, you will have to look further into the implementation details described within fairseq itself.
-3. Can I use Huggingfaces version of BART instead?
+3. *Can I use Huggingfaces version of BART instead?*
   Certainly, however, we have not thoroughly tested the reproducibility of the Huggingface training implementation compared to the original BART code. That is why the fairseq library is used here, instead of the easier to manage Huggingface.
-4. I am having trouble getting my data into the correct format. I'm getting some weird errors...
+4. *I am having trouble getting my data into the correct format. I'm getting some weird errors...*
   Data processing is often the most difficult part of the deep learning pipeline. The processing script provided here only takes into account a limited number of use-cases. If you are experiencing errors, there is a good chance your data breaks something in this pipeline. If this is the case, please create an issue and we'll see what we can do.
-5. I am running out of memory.
+5. *I am running out of memory.*
   Simplest option: Decrease the max-tokens argument, which specifies the maximum number of tokens in the batch. You may also decrease the length of --max-source-positions (default 1024), which will decrease the maximum length of a single example. Finally, you may consider using mixed precision training. Furthermore, see issues at fairseq https://github.com/pytorch/fairseq/issues/1413 and https://github.com/pytorch/fairseq/issues/1818 for more context on the way fairseq handles batching and multi-gpu training.
 
 Happy summarization!
