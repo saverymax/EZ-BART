@@ -36,9 +36,9 @@ def get_args():
 
 class ProcessTrain():
     """
-    Class to create training and validation datasets for BART
-    Created using reference to fairseq processing  code 
-    www.stuff.com
+    Class to create training and validation datasets for BART.
+    Note this will not do the tokenization, as that is handled
+    by the fairseq library.
     """
 
     def create_data_for_bart(self):
@@ -59,7 +59,7 @@ class ProcessTrain():
         try:
             print("Creating config directory:", args.config_path)
             os.makedirs(args.config_path) 
-        except FileExistsError:
+        except FileNotFoundError:
             print("Directory ", args.config_path , " already exists. Make sure you are not writing over existing config data")
             raise 
 
@@ -116,7 +116,7 @@ class ProcessTrain():
         train_tgt = open("{c}/bart.train.target".format(c=args.config_path), "r", encoding="utf8").readlines()
         val_src = open("{c}/bart.val.source".format(c=args.config_path), "r", encoding="utf8").readlines()
         val_tgt = open("{c}/bart.val.target".format(c=args.config_path), "r", encoding="utf8").readlines()
-        assert len(train_src) == snp_cnt, len(train_src)
+        assert len(train_src) == snp_cnt, (snp_cnt, len(train_src))
         assert len(train_tgt) == snp_cnt
         assert len(val_src) == len(val_docs)
         assert len(val_tgt) == len(val_summaries)
