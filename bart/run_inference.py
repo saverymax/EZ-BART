@@ -36,6 +36,7 @@ def get_args():
     parser.add_argument("--batch_size",
                         dest="batch_size",
                         default=2,
+                        type=int,
                         help="Batch size for inference")
     parser.add_argument("--model_config",
                         dest="model_config",
@@ -67,7 +68,8 @@ def main():
         data_name_or_path=args.model_config
     )
 
-    #bart.cuda()
+    # Comment out to run on CPU, but with reduced speed
+    bart.cuda()
     bart.eval()
     gen_summaries = []
     articles = []
