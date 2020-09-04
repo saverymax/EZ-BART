@@ -68,8 +68,10 @@ def main():
         data_name_or_path=args.model_config
     )
 
-    # Comment out to run on CPU, but with reduced speed
-    bart.cuda()
+    if torch.cuda.is_available()
+        bart.cuda()
+    else:
+        print("CUDA is not available. Though it is not necessary for inference, the model will run with reduced speed."
     bart.eval()
     gen_summaries = []
     articles = []
