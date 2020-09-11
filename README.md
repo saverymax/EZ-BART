@@ -41,7 +41,8 @@ Your other option for question-driven summarization is that, if you have questio
 ...
 }
 ```
-The keys in the json you provide must be 'query' and 'document'. See the provided datasets in the directories in data_processing/data for examples     
+The keys in the json you provide must be 'query' and 'document'. See the provided datasets in the directories in data_processing/data for examples.          
+
 To run the model, first download the fine-tuned BART weights from https://bionlp.nlm.nih.gov/bart_finetuned_checkpoint.zip. Once they are unzipped, you can specify the path to them as shown in the example below. Once your data is in the correct format for your use-case and you have downloaded the model, you are ready to summarize! Activate your environment if it is not already activated
 ```
 conda activate ez_bart
@@ -93,7 +94,7 @@ Note that the GPU version of pytorch will be installed, with the CUDA tool kit. 
 Also you will need download the original (i.e., not fine-tuned on BioASQ) BART large weights
 ```
 wget -P bart/ https://dl.fbaipublicfiles.com/fairseq/models/bart.large.tar.gz
-tart -C bart/ -xzvf bart/bart.large.tar.gz 
+tar -C bart/ -xzvf bart/bart.large.tar.gz 
 ```
 ### Data
 
