@@ -68,10 +68,10 @@ def main():
         data_name_or_path=args.model_config
     )
 
-    if torch.cuda.is_available()
+    if torch.cuda.is_available():
         bart.cuda()
     else:
-        print("CUDA is not available. Though it is not necessary for inference, the model will run with reduced speed."
+        print("CUDA is not available. Though it is not necessary for inference, the model will run with reduced speed.")
     bart.eval()
     gen_summaries = []
     articles = []
@@ -104,7 +104,7 @@ def main():
         # Once the article list fills up, run a batch
         if len(articles) == args.batch_size:
             batch_cnt += 1
-            print("Running batch {}".format(batch_cnt))
+            #print("Running batch {}".format(batch_cnt))
             # Hyperparameters as recommended here: https://github.com/pytorch/fairseq/issues/1364
             with torch.no_grad():
                 predictions = bart.sample(articles, beam=4, lenpen=2.0, max_len_b=140, min_len=55, no_repeat_ngram_size=3)
